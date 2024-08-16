@@ -109,40 +109,43 @@ void loop() {
 
 
 
-abrirParpados();
-Serial.println("Abrir Parpados"); 
-yield();
-delay(2000);
- OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
-mirarDerecha();
-Serial.println("Mirar derecha"); yield();
-delay(2000);
- OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
-mirarCentro();
- OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
-Serial.println("Mirar al centro"); yield();
-delay(2000);
-mirarIzquierda(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
-Serial.println("mirar a la izquierda"); yield();
-delay(2000); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
-Serial.println("Mirar al centro"); yield();
-mirarCentro();
-Serial.println("guiñar ojo DERECHO "); yield();
-guinarOjoDerecho(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
-delay(2000);
-Serial.println("Mirar arriba"); yield();
-mirarArriba(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
-delay(2000);
-Serial.println("Mirar abajo"); yield();
-mirarAbajo(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
-delay(1000);
-Serial.println("Mirar al centro"); yield();
-mirarCentro(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
-delay(1000);
-cerrarParpados();
+  abrirParpados();
+  Serial.println("Abrir Parpados"); 
+  yield();
+  delay(2000);
+  OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
+  mirarDerecha();
+  Serial.println("Mirar derecha"); yield();
+  delay(2000);
+  OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
+  mirarCentro();
+  OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
+  Serial.println("Mirar al centro"); yield();
+  delay(2000);
+  mirarIzquierda(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
+  Serial.println("mirar a la izquierda"); yield();
+  delay(2000); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
+  Serial.println("Mirar al centro"); yield();
+  mirarCentro();
+  Serial.println("guiñar ojo DERECHO "); yield();
+  guinarOjoDerecho(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
+  delay(2000);
+  Serial.println("Mirar arriba"); yield();
+  mirarArriba(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
+  delay(2000);
+  Serial.println("Mirar abajo"); yield();
+  mirarAbajo(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
+  delay(1000);
+  Serial.println("Mirar al centro"); yield();
+  mirarCentro(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
+  delay(1000);
+  cerrarParpados();
 
-//movimientoCircularHorario();
+  //movimientoCircularHorario();
+
+   }
 }
+
 void TodosCentro(){
   servo1.write(centroParpadoSupIzq);  // cerrar párpado superior izquierdo
   servo2.write(centroParpadoSupDer);  // cerrar párpado superior derecho
