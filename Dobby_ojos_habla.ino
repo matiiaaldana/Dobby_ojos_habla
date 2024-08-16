@@ -1,4 +1,14 @@
-const char *version = "2.0"; //Se agrega audio para reproducción 
+/**
+ * @file ojos_dobby.ino
+ * @brief Programa para controlar los ojos de Dobby con ESP32
+ * @version 2.1
+ * @date 2024-08-16
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
+const char *version = "2.1"; // Se agrega modo dormir y botón de reinicio
 #include <ESP32Servo.h> // Incluir la librería ESP32Servo ESP32Servo con versión 3.0.4 con idf-release_v5.1 esp32\3.0.1
 #include <WiFi.h>
 #include <ESPmDNS.h>
@@ -16,6 +26,9 @@ const char *version = "2.0"; //Se agrega audio para reproducción
 #define MISO 19  // Pin de salida de datos para SPI
 #define MOSI 23  // Pin de entrada de datos para SPI
 #define CS 5     // Pin de selección de chip para SPI
+
+#define PIN_BOTON_INICIAR 34
+#define PIN_BOTON_RESET 35
 // Variables para el manejo del audio
 AudioGeneratorMP3 *mp3;       // Generador de audio MP3
 AudioFileSourceSD *fuente;    // Fuente de archivo de audio desde la tarjeta SD
@@ -59,6 +72,15 @@ Servo servo4; // Servo del párpado inferior derecho
 Servo servo5; // Servo de movimiento horizontal de ambos ojos
 Servo servo6; // Servo de movimiento vertical de ambos ojos
 
+// Variables para el modo dormir
+const unsigned long TIEMPO_ANTES_DE_DORMIR = 600000; // 10 minutos en milisegundos
+const unsigned long TIEMPO_Entre_Audios = 30000; // 30 segundo en milisegundos
+
+unsigned long ultimaActividad = 0;
+
+/**
+ * @brief Configura los pines, servicios y realiza la inicialización del sistema
+ */
 
 void setup() {
   Serial.begin(115200); // Inicializa la comunicación serial a 115200 baudios
@@ -75,6 +97,14 @@ void setup() {
   fuente = new AudioFileSourceSD();   // Crea una instancia de la fuente de audio desde la tarjeta SD
  
   salida->SetOutputModeMono(true); // Configura la salida de audio en modo monoaural
+    // Configurar pines de botones
+  pinMode(PIN_BOTON_INICIAR, INPUT_PULLUP);
+  pinMode(PIN_BOTON_RESET, INPUT_PULLUP);
+  
+  // Configurar interrupción para despertar
+  esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_BOTON_INICIAR, LOW);
+
+
   // Adjuntar los servos a los pines correspondientes
   // use enservo modelo SG90  min/max de 500us y 2400us00
   // para servos más grandes como  MG995, use 1000us y 2000us,
@@ -89,16 +119,28 @@ void setup() {
     Serial.println("Todo al centro"); 
 
   delay(1000);
+  
+  delay(1000);
+  
+  ultimaActividad = millis();
 }
 
 void loop() {
   OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
  yield(); // Pasa el control a otras tareas
- unsigned long tiempoActual = millis(); // Obtiene el tiempo actual
-  delay(2000);
+   if (digitalRead(PIN_BOTON_RESET) == LOW) {
+    ESP.restart();
+  }
+  
+  if (millis() - ultimaActividad > TIEMPO_ANTES_DE_DORMIR) {
+    if (!mp3->isRunning()) {
+      entrarModoSueno();
+    }
+  }
+
+ 
   if (mp3->isRunning()) { // Verifica si el audio está en reproducción
-    if (!mp3->loop() && yaReprodujo) { // Si el audio ha terminado de reproducirse
-      yaReprodujo = false; // Reinicia la bandera de reproducción
+    if (!mp3->loop() ) { // Si el audio ha terminado de reproducirse
       mp3->stop();         // Detiene la reproducción
       fuente->close();     // Cierra el archivo de audio
       Serial.println("Audio Stop"); // Mensaje de parada de audio
@@ -140,6 +182,14 @@ void loop() {
   mirarCentro(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
   delay(1000);
   cerrarParpados();
+ ultimaActividad = millis();
+ if (millis() - ultimaActividad > TIEMPO_Entre_Audios) {
+    if (!mp3->isRunning()) {
+      reproducirRespuestaAleatoria();
+      
+    }
+  }
+  
 
   //movimientoCircularHorario();
 
@@ -302,7 +352,6 @@ void reproducirAudio(const char *ruta) {
 
   yield(); // Pasa el control a otras tareas
   mp3->begin(fuente, salida); // Inicia la reproducción del audio
-  yaReprodujo = true; // Marca que se está reproduciendo un audio
 }
 
 void reproducirRespuestaAleatoria() {
@@ -311,17 +360,14 @@ void reproducirRespuestaAleatoria() {
   snprintf(ruta, sizeof(ruta), "/resp%d.mp3", numeroRespuesta); // Formatea la ruta del archivo de audio de la respuesta aleatoria
   Serial.print("Aleatorea: ");
   Serial.println(ruta);
-  aleatoreaReproducida = true; // Marca que se reprodujo una respuesta aleatoria
   reproducirAudio(ruta); // Llama a la función de reproducción de audio genérica
-  touchPresionado = true;
 }
 
 void reproducirIntroduccion() {
   const char *archivoIntroduccion = "/intro.mp3"; // Ruta del archivo de introducción
   reproducirAudio(archivoIntroduccion); // Llama a la función de reproducción de audio genérica
   while (mp3->isRunning()){
-    if (!mp3->loop() && yaReprodujo) { // Si el audio ha terminado de reproducirse
-     // yaReprodujo = false; // Reinicia la bandera de reproducción
+    if (!mp3->loop()) { // Si el audio ha terminado de reproducirse
       mp3->stop();         // Detiene la reproducción
       fuente->close();     // Cierra el archivo de audio
       Serial.println("Audio Stop"); // Mensaje de parada de audio
@@ -329,12 +375,18 @@ void reproducirIntroduccion() {
       yield(); // Pasa el control a otras tareas
     }
   }
-  //reproducirPregunta(preguntaActual);
-  aleatoreaReproducida = true; // Marca que se reprodujo una respuesta aleatoria
-  return;
+   return;
 }
 
-
+/**
+ * @brief Entra en modo de bajo consumo
+ */
+void entrarModoSueno() {
+  Serial.println("Entrando en modo sueño...");
+  cerrarParpados();
+  delay(1000);
+  esp_deep_sleep_start();
+}
 
 
 
