@@ -9,7 +9,7 @@
  */
 
 const char *version = "2.1"; // Se agrega modo dormir y botón de reinicio
-#include <ESP32Servo.h> // Incluir la librería ESP32Servo ESP32Servo con versión 3.0.4 con idf-release_v5.1 esp32\3.0.1
+#include <ESP32Servo.h> // Incluir la librería ESP32Servo ESP32Servo con versión 3.0.5 con esp32\2.0.17 con versión 3.0.? no compilará.
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
