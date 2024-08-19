@@ -114,27 +114,26 @@ void setup() {
   servo4.attach(servoPin4, 500, 2400);
   servo5.attach(servoPin5, 500, 2400);
   servo6.attach(servoPin6, 500, 2400);
-  delay(1000);
+  yield();
   TodosCentro(); //Pone todos los cervos en cero, ojos centrados y parpados cerrados
     Serial.println("Todo al centro"); 
-
-  delay(1000);
-  
-  delay(1000);
-  
-  ultimaActividad = millis();
+  yield();
+  reproducirIntroduccion();
+    ultimaActividad = millis();
 }
 
 void loop() {
   OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
  yield(); // Pasa el control a otras tareas
    if (digitalRead(PIN_BOTON_RESET) == LOW) {
-    ESP.restart();
+   Serial.println("reset");
+   // ESP.restart();
   }
   
   if (millis() - ultimaActividad > TIEMPO_ANTES_DE_DORMIR) {
     if (!mp3->isRunning()) {
-      entrarModoSueno();
+      //entrarModoSueno();
+      Serial.println("entrar en modo sueño");
     }
   }
 
@@ -148,9 +147,6 @@ void loop() {
       yield(); 
     }
   } else { // Si el audio no está en reproducción
-
-
-
   abrirParpados();
   Serial.println("Abrir Parpados"); 
   yield();
@@ -184,10 +180,11 @@ void loop() {
   cerrarParpados();
  ultimaActividad = millis();
  if (millis() - ultimaActividad > TIEMPO_Entre_Audios) {
-    if (!mp3->isRunning()) {
+    
+      Serial.println("reproducirRespuestaAleatoria"); 
       reproducirRespuestaAleatoria();
       
-    }
+    
   }
   
 
@@ -341,16 +338,20 @@ void movimientoCircularAntihorario() {
 
 void reproducirAudio(const char *ruta) {
   if (!SD.exists(ruta)) { // Verifica si el archivo existe en la tarjeta SD
+    Serial.println(ruta);
     Serial.println("Archivo no encontrado"); // Mensaje de error si el archivo no existe
     return; // Termina la función si el archivo no existe
   }
 
   if (!fuente->open(ruta)) { // Abre el archivo de audio
+     Serial.println(ruta);
     Serial.println("Error al abrir el archivo"); // Mensaje de error si no se puede abrir el archivo
     return; // Termina la función si no se puede abrir el archivo
   }
 
   yield(); // Pasa el control a otras tareas
+  Serial.println("Reproduciendo :");
+  Serial.println(ruta);
   mp3->begin(fuente, salida); // Inicia la reproducción del audio
 }
 
