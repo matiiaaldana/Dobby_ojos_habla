@@ -8,7 +8,7 @@
  * 
  */
 
-const char *version = "2.1"; // Se agrega modo dormir y botón de reinicio
+const char *version = "2.2"; // Se agrega modo dormir y botón de inicio y se sacó Reset
 #include <ESP32Servo.h> // Incluir la librería ESP32Servo ESP32Servo con versión 3.0.5 con esp32\2.0.17 con versión 3.0.? no compilará.
 #include <WiFi.h>
 #include <ESPmDNS.h>
@@ -28,12 +28,12 @@ const char *version = "2.1"; // Se agrega modo dormir y botón de reinicio
 #define CS 5     // Pin de selección de chip para SPI
 
 #define PIN_BOTON_INICIAR 34
-#define PIN_BOTON_RESET 35
+
 // Variables para el manejo del audio
 AudioGeneratorMP3 *mp3;       // Generador de audio MP3
 AudioFileSourceSD *fuente;    // Fuente de archivo de audio desde la tarjeta SD
 AudioOutputI2SNoDAC *salida;  // Salida de audio sin DAC
-int totalRespuestasAleatorias = 2; //Cantidad de archivos de audio que posee para respuestas aleatorias 
+int totalRespuestasAleatorias = 3; //Cantidad de archivos de audio que posee para respuestas aleatorias 
 //#include <TickTwo.h>
 bool OTAhabilitado = false; // variable que se utilizara para inabilitar la función OTA si no se pudo lograr la conexion WIFI
 // Configuración de la red WiFi
@@ -73,10 +73,11 @@ Servo servo5; // Servo de movimiento horizontal de ambos ojos
 Servo servo6; // Servo de movimiento vertical de ambos ojos
 
 // Variables para el modo dormir
-const unsigned long TIEMPO_ANTES_DE_DORMIR = 600000; // 10 minutos en milisegundos
-const unsigned long TIEMPO_Entre_Audios = 30000; // 30 segundo en milisegundos
+const unsigned long TIEMPO_ANTES_DE_DORMIR = 30000; //600000; // 10 minutos en milisegundos
+const unsigned long TIEMPO_Entre_Audios = 10000; // 30 segundo en milisegundos
 
 unsigned long ultimaActividad = 0;
+unsigned long ActividadInicio = 0;
 
 /**
  * @brief Configura los pines, servicios y realiza la inicialización del sistema
@@ -99,7 +100,6 @@ void setup() {
   salida->SetOutputModeMono(true); // Configura la salida de audio en modo monoaural
     // Configurar pines de botones
   pinMode(PIN_BOTON_INICIAR, INPUT_PULLUP);
-  pinMode(PIN_BOTON_RESET, INPUT_PULLUP);
   
   // Configurar interrupción para despertar
   esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_BOTON_INICIAR, LOW);
@@ -120,19 +120,16 @@ void setup() {
   yield();
   reproducirIntroduccion();
     ultimaActividad = millis();
+    ActividadInicio = ultimaActividad;
 }
 
 void loop() {
   OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
  yield(); // Pasa el control a otras tareas
-   if (digitalRead(PIN_BOTON_RESET) == LOW) {
-   Serial.println("reset");
-   // ESP.restart();
-  }
-  
-  if (millis() - ultimaActividad > TIEMPO_ANTES_DE_DORMIR) {
+    
+  if (millis() - ActividadInicio > TIEMPO_ANTES_DE_DORMIR) {
     if (!mp3->isRunning()) {
-      //entrarModoSueno();
+      entrarModoSueno();
       Serial.println("entrar en modo sueño");
     }
   }
