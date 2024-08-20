@@ -178,7 +178,7 @@ void loop() {
   mirarCentro(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
   delay(1000);
   cerrarParpados();
- ultimaActividad = millis();
+ 
  if (millis() - ultimaActividad > TIEMPO_Entre_Audios) {
     
       Serial.println("reproducirRespuestaAleatoria"); 
@@ -353,6 +353,7 @@ void reproducirAudio(const char *ruta) {
   Serial.println("Reproduciendo :");
   Serial.println(ruta);
   mp3->begin(fuente, salida); // Inicia la reproducción del audio
+  ultimaActividad = millis();
 }
 
 void reproducirRespuestaAleatoria() {
