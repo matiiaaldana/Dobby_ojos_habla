@@ -43,8 +43,8 @@ const char *password = ""; // Contraseña de la red WiFi
 // Definir los pines donde están conectados los servos
 const int servoPin1 = 14; // Servo del párpado superior izquierdo. Abre sentido Anti  Horario
 const int servoPin2 = 27; // Servo del párpado superior derecho .Abre sentido Horario
-const int servoPin3 = 26; // Servo del párpado inferior izquierdo. Abre sentido Horario
-const int servoPin4 = 25; // Servo del párpado inferior derecho. abre sentido Antihorario
+const int servoPin3 = 12; // Servo del párpado inferior izquierdo. Abre sentido Horario
+const int servoPin4 = 13; // Servo del párpado inferior derecho. abre sentido Antihorario
 const int servoPin5 = 33; // Servo de movimiento horizontal de ambos ojos +- 15º
 const int servoPin6 = 32; // Servo de movimiento vertical de ambos ojos +-15º
 
@@ -175,7 +175,11 @@ void loop() {
   mirarCentro(); OTAhabilitado ? ArduinoOTA.handle() : yield(); // Maneja la actualización OTA, solo si la condición OTAhabilitado es Verdadera
   delay(1000);
   cerrarParpados();
- 
+  delay(1000);
+  abrirParpados();
+  Serial.println("Abrir Parpados"); 
+  yield();
+  delay(2000);
  if (millis() - ultimaActividad > TIEMPO_Entre_Audios) {
     
       Serial.println("reproducirRespuestaAleatoria"); 
@@ -363,6 +367,7 @@ void reproducirRespuestaAleatoria() {
 }
 
 void reproducirIntroduccion() {
+  abrirParpados();
   const char *archivoIntroduccion = "/intro.mp3"; // Ruta del archivo de introducción
   reproducirAudio(archivoIntroduccion); // Llama a la función de reproducción de audio genérica
   while (mp3->isRunning()){
