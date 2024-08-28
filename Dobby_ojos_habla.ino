@@ -143,7 +143,7 @@ void loop() {
       Serial.println("Archivo Cerrado"); // Mensaje de archivo cerrado
       yield(); 
     }
-  } else { // Si el audio no está en reproducción
+  } else { // Si el audio no está en reproducciónservo1.attach(servoPin1, 500, 2400);
   abrirParpados();
   Serial.println("Abrir Parpados"); 
   yield();
