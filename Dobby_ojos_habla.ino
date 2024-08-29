@@ -41,10 +41,10 @@ const char *ssid = "";          // Nombre de la red WiFi
 const char *password = ""; // Contraseña de la red WiFi
 
 // Definir los pines donde están conectados los servos
-const int servoPin1 = 14; // Servo del párpado superior izquierdo. Abre sentido Anti  Horario
-const int servoPin2 = 27; // Servo del párpado superior derecho .Abre sentido Horario
-const int servoPin3 = 12; // Servo del párpado inferior izquierdo. Abre sentido Horario
-const int servoPin4 = 13; // Servo del párpado inferior derecho. abre sentido Antihorario
+const int servoPin1 = 13; // Servo del párpado superior izquierdo. Abre sentido Anti  Horario
+const int servoPin2 = 12; // Servo del párpado superior derecho .Abre sentido Horario
+const int servoPin3 = 14; // Servo del párpado inferior izquierdo. Abre sentido Horario
+const int servoPin4 = 27; // Servo del párpado inferior derecho. abre sentido Antihorario
 const int servoPin5 = 33; // Servo de movimiento horizontal de ambos ojos +- 15º
 const int servoPin6 = 32; // Servo de movimiento vertical de ambos ojos +-15º
 
