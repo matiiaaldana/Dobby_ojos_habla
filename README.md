@@ -387,3 +387,12 @@ void initOTA() {
 
 Este archivo proporciona una explicación detallada de cada función principal en el código de los Ojos de Dobby. Ayudará a los estudiantes a comprender cómo funciona cada parte del programa y cómo interactúan entre sí.
 
+### cambios 29/8 
+se modifican los pines de salidas de servos , para facilitar el ruteo de pistas en el pcb :
+const int servoPin1 = 13; // Servo del párpado superior izquierdo. Abre sentido Anti  Horario
+const int servoPin2 = 12; // Servo del párpado superior derecho .Abre sentido Horario
+const int servoPin3 = 14; // Servo del párpado inferior izquierdo. Abre sentido Horario
+const int servoPin4 = 27; // Servo del párpado inferior derecho. abre sentido Antihorario
+const int servoPin5 = 33; // Servo de movimiento horizontal de ambos ojos +- 15º
+const int servoPin6 = 32; // Servo de movimiento vertical de ambos ojos +-15º
+
