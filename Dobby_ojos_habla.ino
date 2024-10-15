@@ -64,6 +64,7 @@ const int recorridoParpadoSupDer = 45; // movimiento párpado Superior Derecho
 
 
 
+
 // Crear objetos Servo
 Servo servo1; // Servo del párpado superior izquierdo
 Servo servo2; // Servo del párpado superior derecho
