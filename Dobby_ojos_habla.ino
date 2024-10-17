@@ -145,38 +145,39 @@ void loop() {
       yield(); 
     }
   } else { // Si el audio no está en reproducciónservo1.attach(servoPin1, 500, 2400);
-  abrirParpados();
-  Serial.println("Abrir Parpados"); 
-    delay(2000);
-   mirarDerecha();
-  Serial.println("Mirar derecha");
-    delay(2000);
-  mirarCentro();
-    Serial.println("Mirar al centro"); 
-  delay(2000);
-  mirarIzquierda(); 
-  Serial.println("mirar a la izquierda"); 
-  delay(2000); 
-  Serial.println("Mirar al centro"); 
-  mirarCentro();
-  Serial.println("guiñar ojo DERECHO ");
-  guinarOjoDerecho(); 
-  delay(2000);
-  Serial.println("Mirar arriba"); 
-  mirarArriba(); 
-  delay(2000);
-  Serial.println("Mirar abajo"); 
-  mirarAbajo(); 
-  delay(1000);
-  Serial.println("Mirar al centro"); 
-  mirarCentro(); 
-  delay(1000);
+  
+  // empieza la secuencia de movimientos 
   cerrarParpados();
-  delay(1000);
+  Serial.println("Cerrar Parpados"); 
+  delay(2000);
   abrirParpados();
   Serial.println("Abrir Parpados"); 
-  yield();
   delay(2000);
+  mirarIzquierda() ;
+  Serial.println("Mirar Izquierda"); 
+  delay(2000);
+  mirarDerecha() ;
+  Serial.println("Mirar Derecha"); 
+  delay(2000);
+  mirarCentro();
+  Serial.println("Mirar Centro"); 
+  delay(2000);
+  mirarArriba() ;
+  Serial.println("Mirar Arriba"); 
+  delay(2000);
+  mirarAbajo() ;
+  Serial.println("Mirar Abajo"); 
+  delay(2000);
+  mirarCentro();
+  Serial.println("Mirar Centro"); 
+  delay(2000);
+  cerrarParpados();
+  Serial.println("Cerrar Parpado"); 
+  delay(2000);
+  abrirParpados() 
+  Serial.println("Abrir Parpados"); 
+  delay(2000);
+  
  if (millis() - ultimaActividad > TIEMPO_Entre_Audios) {
     
       Serial.println("reproducirRespuestaAleatoria"); 
