@@ -174,7 +174,7 @@ void loop() {
   cerrarParpados();
   Serial.println("Cerrar Parpado"); 
   delay(2000);
-  abrirParpados() 
+  abrirParpados(); 
   Serial.println("Abrir Parpados"); 
   delay(2000);
   
